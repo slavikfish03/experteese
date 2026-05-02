@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: First User
+  email: first@example.com
+  password_digest: <%= BCrypt::Password.create("222222") %>
+  remember_token: first_token
+
+two:
+  name: Second User
+  email: second@example.com
+  password_digest: <%= BCrypt::Password.create("222222") %>
+  remember_token: second_token

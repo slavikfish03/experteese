@@ -1,0 +1,24 @@
+- content_for :title, t(".title")
+
+.page-header
+  %span.section-kicker= t(".kicker")
+  %h1.h2.mb-3= t(".heading")
+  %p.text-secondary.mb-0= t(".lead")
+
+.row.g-4.mt-1
+  .col-lg-6
+    %section.content-band
+      %h2.h5.mb-3= t(".ready_heading")
+      %ul.stacked-list.mb-0
+        %li= t(".ready_items.layout")
+        %li= t(".ready_items.partials")
+        %li= t(".ready_items.bootstrap")
+        %li= t(".ready_items.icons")
+  .col-lg-6
+    %section.content-band
+      %h2.h5.mb-3= t(".next_heading")
+      %ul.stacked-list.mb-0
+        %li= t(".next_items.data")
+        %li= t(".next_items.work")
+        %li= t(".next_items.auth")
+        %li= t(".next_items.locale")

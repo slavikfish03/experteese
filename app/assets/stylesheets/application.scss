@@ -1,0 +1,211 @@
+$primary: #1f6f5f;
+$secondary: #6b7280;
+$dark: #13202b;
+$light: #f4f6f2;
+$body-bg: #eef2ec;
+$body-color: #1b2330;
+$border-color: #d6ddd4;
+$font-family-sans-serif: "Aptos", "Segoe UI", "Helvetica Neue", sans-serif;
+$headings-font-family: "Aptos Display", "Segoe UI", "Helvetica Neue", sans-serif;
+$fa-font-path: ".";
+
+@import "bootstrap";
+@import "font-awesome";
+
+body.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(31, 111, 95, 0.12), transparent 26rem),
+    linear-gradient(180deg, #f8faf7 0%, #eef2ec 100%);
+}
+
+.app-main {
+  min-height: calc(100vh - 10rem);
+}
+
+.navbar-brand {
+  letter-spacing: 0;
+}
+
+.nav-link {
+  border-radius: 0.5rem;
+  color: $dark;
+  font-weight: 500;
+  padding-inline: 0.85rem !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background-color: rgba($primary, 0.08);
+  color: $primary;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.hero-surface,
+.page-header,
+.content-band,
+.summary-panel {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(19, 32, 43, 0.08);
+  border-radius: 0.5rem;
+}
+
+.hero-surface,
+.page-header {
+  padding: clamp(1.5rem, 2vw, 2.5rem);
+}
+
+.content-band,
+.summary-panel {
+  padding: 1.5rem;
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+  color: $primary;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.section-kicker::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: rgba($primary, 0.45);
+}
+
+.summary-list,
+.stacked-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.summary-list li,
+.stacked-list li {
+  margin-bottom: 0.75rem;
+}
+
+.summary-list li:last-child,
+.stacked-list li:last-child {
+  margin-bottom: 0;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.meta-grid dt {
+  margin-bottom: 0.25rem;
+  color: $secondary;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.meta-grid dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.account-pill,
+.future-pill,
+.tech-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid rgba(19, 32, 43, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.4rem 0.75rem;
+}
+
+.account-pill {
+  color: $dark;
+}
+
+.account-pill:hover {
+  border-color: rgba($primary, 0.28);
+  color: $primary;
+}
+
+.locale-link {
+  border: 1px solid rgba(19, 32, 43, 0.12);
+  border-radius: 0.35rem;
+  color: $secondary;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.45rem 0.55rem;
+  text-decoration: none;
+}
+
+.locale-link:hover,
+.locale-link.active {
+  border-color: rgba($primary, 0.3);
+  background: rgba($primary, 0.08);
+  color: $primary;
+}
+
+.future-pill {
+  color: $secondary;
+}
+
+.gravatar {
+  width: 5rem;
+  height: 5rem;
+  border: 1px solid rgba(19, 32, 43, 0.12);
+  border-radius: 50%;
+}
+
+.tech-pill {
+  color: $dark;
+  font-weight: 600;
+}
+
+.text-accent {
+  color: $primary;
+}
+
+.btn-accent {
+  @include button-variant($primary, $primary, #fff, shade-color($primary, 7%), shade-color($primary, 7%), #fff);
+}
+
+.work-controls .form-select,
+.rating-form .form-control {
+  min-height: 2.65rem;
+}
+
+.work-image-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(19, 32, 43, 0.1);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  aspect-ratio: 16 / 10;
+}
+
+.work-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.work-meta {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 991.98px) {
+  .meta-grid {
+    grid-template-columns: 1fr;
+  }
+}

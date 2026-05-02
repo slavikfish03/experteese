@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+if gem list foreman -i --silent; then
+  exec foreman start -f Procfile.dev "$@"
+else
+  echo "Foreman is not installed. Building Sass once and starting Rails server only."
+  bin/rails dartsass:build
+  exec bin/rails server "$@"
+fi

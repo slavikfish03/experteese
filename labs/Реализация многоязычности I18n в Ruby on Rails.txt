@@ -1,0 +1,84 @@
+﻿На основе материалов Части 8 курса и презентации «Two languages & Pagination», ниже приведен полный набор кода и конфигураций для реализации многоязычности (интернационализации I18n) в вашем приложении.
+1. Начальная настройка (config/initializers/i18n.rb)
+Сначала необходимо определить список доступных языков и установить язык по умолчанию в инициализаторе.
+# /experteese/config/initializers/i18n.rb
+I18n.available_locales = [:ru, :en]
+I18n.default_locale = :ru # Установка русского языка по умолчанию [1, 2]
+2. Логика переключения в ApplicationController
+Чтобы приложение автоматически определяло выбранный язык и сохраняло его при переходах, в основной контроллер добавляется фильтр before_action и методы обработки параметров 3, 4.
+# app/controllers/application_controller.rb
+class ApplicationController < ActionController::Base
+  before_action :set_locale # Выполнять перед каждым действием [4]
+
+
+  private
+
+
+  # Установка локали на основе параметров запроса
+  def set_locale
+    I18n.locale = set_locale_from_params || I18n.default_locale
+    # Сохранение локали в параметрах URL по умолчанию
+    Rails.application.routes.default_url_options[:locale] = I18n.locale [3, 5]
+  end
+
+
+  # Проверка наличия и валидности параметра :locale в URL
+  def set_locale_from_params
+    if params[:locale]
+      if I18n.available_locales.include?(params[:locale].to_sym)
+        I18n.locale = params[:locale]
+      else
+        flash.now[:alarm] = "#{params[:locale]} translation not found"
+      end
+      params[:locale]
+    end
+  end
+end
+3. Словари переводов (YAML файлы)
+Переводы хранятся в папке config/locales/. Приведены примеры для заголовков и навигации 6-9.
+Английский словарь (config/locales/en.yml):
+en:
+  shared:
+    header:
+      logo_title: "Experteese in Ruby_on_Rails"
+      home: "Home"
+      help: "Help"
+      sign_in: "Sign in"
+      sign_out: "Sign out"
+  users:
+    form:
+      name: "Name"
+      create_account: "Create my account" [6, 8]
+Русский словарь (config/locales/ru.yml):
+ru:
+  shared:
+    header:
+      logo_title: "Experteese на Ruby_on_Rails"
+      home: "Главная"
+      help: "Помощь"
+      sign_in: "Войти"
+      sign_out: "Выйти"
+  users:
+    form:
+      name: "Имя"
+      create_account: "Создать мой аккаунт" [7, 9]
+4. Использование в представлениях (Haml)
+Для вывода переведенного текста используется метод t() (сокращение от translate).
+В формах:
+-# app/views/users/_form.html.haml
+.field
+  = f.label t('.name') # Выведет "Имя" или "Name" [9, 10]
+= f.submit t(".create_account"), class: "btn btn-primary"
+Переключатель языков в Header (с флагами):
+-# app/views/shared/_header.html.haml
+%p.locale
+  = link_to image_tag("Russia.jpg", alt: "RU", style: "width: 10%"), locale: :ru
+  = link_to image_tag("United_Kingdom.jpg", alt: "EN", style: "width: 12%"), locale: :en
+  %b= I18n.locale # Отображение текущего кода языка [7, 11, 12]
+5. Дополнительная конфигурация (config/application.rb)
+Для версий Rails ниже 7-й могут потребоваться дополнительные настройки путей загрузки и откатов (fallbacks) 5, 10.
+# config/application.rb
+config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
+config.i18n.fallbacks = true
+config.i18n.fallbacks = [:en] # Если перевода нет на русском, показать английский [5, 10]
+Важное примечание: В Rails 7 многие из этих конфигураций (пункты 1.3 и 5) уже не являются обязательными и работают «из коробки» 8.

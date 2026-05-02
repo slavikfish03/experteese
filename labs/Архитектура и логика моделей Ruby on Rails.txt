@@ -1,0 +1,104 @@
+﻿На основе материалов Части 4 и Части 7, ниже представлен программный код основных моделей проекта (User, Image, Theme, Value), включая настроенные ассоциации, валидации, области видимости (scope) и механизмы аутентификации.
+1. Модель User (app/models/user.rb)
+Эта модель является центральной для системы аутентификации. Она включает шифрование паролей и генерацию токенов сессий 1, 2.
+class User < ApplicationRecord
+  # Ассоциации
+  has_many :values, dependent: :destroy # При удалении пользователя удаляются его оценки [3]
+
+
+  # Коллбэки (функции обратного вызова)
+  before_save { self.email = email.downcase } # Принудительный нижний регистр для email [1]
+  before_create :create_remember_token        # Создание токена перед сохранением нового юзера [1]
+
+
+  # Валидации
+  validates :name, presence: true, uniqueness: true, length: { maximum: 50 } [1]
+  
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+  validates :email, presence: true,
+                    uniqueness: { case_sensitive: false },
+                    format: { with: VALID_EMAIL_REGEX } [1]
+
+
+  # Система безопасности
+  has_secure_password # Обеспечивает виртуальные поля password и password_confirmation [2]
+  validates :password, length: { minimum: 6 } [2]
+
+
+  # Методы класса для работы с токенами
+  def User.new_remember_token
+    SecureRandom.urlsafe_base64 # Генерирует случайную строку [2]
+  end
+
+
+  def User.encrypt(token)
+    Digest::SHA1.hexdigest(token.to_s) # Шифрование токена по алгоритму SHA1 [2]
+  end
+
+
+  private
+
+
+  def create_remember_token
+    # Генерация и шифрование токена для хранения в БД [2]
+    self.remember_token = User.encrypt(User.new_remember_token)
+  end
+end
+2. Модель Image (app/models/image.rb)
+Отвечает за хранение данных об изображениях и их привязку к темам 4, 5.
+class Image < ApplicationRecord
+  # Ассоциации
+  belongs_to :theme # Изображение всегда принадлежит определенной теме [6]
+
+
+  # Области видимости (Scopes)
+  # Выборка данных изображений для конкретной темы [5, 7]
+  scope :theme_images, -> (theme_id) {
+    select('id', 'name', 'file', 'ave_value').where(theme_id: theme_id)
+  }
+
+
+  # Поиск конкретного изображения (вспомогательный метод) [8]
+  scope :find_image, -> (image_id) { find(image_id) }
+  
+  # Метод обновления среднего значения оценки (из Части 11) [9]
+  def self.update_ave_value(image_id, ave_value)
+    image = find(image_id)
+    image.update(ave_value: ave_value)
+  end
+end
+3. Модель Theme (app/models/theme.rb)
+Описывает темы, по которым проводятся экспертные оценки 4, 6.
+class Theme < ApplicationRecord
+  # Ассоциации
+  has_many :images # Тема включает в себя множество изображений [6]
+  
+  # Вспомогательный метод для поиска ID по названию (используется в контроллерах) [10]
+  def self.find_theme_id(theme_name)
+    find_by(name: theme_name).id
+  end
+end
+4. Модель Value (app/models/value.rb)
+Служит связующим звеном, хранящим оценку конкретного пользователя для конкретного изображения 3, 4.
+class Value < ApplicationRecord
+  # Ассоциации
+  belongs_to :user # Оценка принадлежит пользователю [3]
+  # Также подразумевается ассоциация belongs_to :image
+
+
+  # Область видимости для проверки, оценивал ли пользователь картинку [8]
+  scope :user_valued_image, -> (current_user_id, image_id) {
+    where(user_id: current_user_id, image_id: image_id)
+  }
+  
+  # Метод для расчета среднего значения (из Части 11) [11]
+  def self.calc_average_value(image_id)
+    values_arr = self.where(image_id: image_id).pluck(:value)
+    return 0 if values_arr.empty?
+    (values_arr.inject(:+).to_f / values_arr.size).round
+  end
+end
+Ключевые моменты реализации:
+* Безопасность: В модели User метод has_secure_password требует наличия в БД столбца password_digest 12, 13.
+* Целостность: Ассоциация has_many :values, dependent: :destroy гарантирует, что в БД не останется «бесхозных» оценок при удалении профиля пользователя 3.
+* Оптимизация: Использование scope позволяет выносить логику SQL-запросов из контроллеров в модели, делая код более чистым и тестируемым 5.

@@ -1,0 +1,20 @@
+- content_for :title, t(".title")
+
+.page-header.mb-4
+  %span.section-kicker= t(".kicker")
+  %h1.h2.mb-2= t(".heading")
+  %p.text-secondary.mb-0= t(".lead")
+
+.row.justify-content-center
+  .col-lg-6
+    .content-band
+      = form_with scope: :session, url: login_path, local: true do |f|
+        .mb-3
+          = f.label :email, class: "form-label fw-semibold"
+          = f.email_field :email, class: "form-control", required: true
+        .mb-4
+          = f.label :password, class: "form-label fw-semibold"
+          = f.password_field :password, class: "form-control", required: true
+        .d-flex.flex-wrap.align-items-center.gap-3
+          = f.submit t(".submit"), class: "btn btn-accent"
+          = link_to t(".signup"), signup_path, class: "link-secondary"

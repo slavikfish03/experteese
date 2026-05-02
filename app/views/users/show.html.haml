@@ -1,0 +1,71 @@
+- content_for :title, @user.name
+
+.page-header.mb-4
+  .d-flex.align-items-center.gap-3
+    = gravatar_for @user
+    %div
+      %span.section-kicker= t(".kicker")
+      %h1.h2.mb-1= @user.name
+      %p.text-secondary.mb-0= @user.email
+
+.content-band
+  %dl.meta-grid
+    %div
+      %dt= t(".submitted_ratings")
+      %dd= @rating_count
+    %div
+      %dt= t(".rated_images")
+      %dd= @rated_image_count
+    %div
+      %dt= t(".rated_themes")
+      %dd= @rated_theme_count
+    %div
+      %dt= t(".member_since")
+      %dd= l(@user.created_at.to_date, format: :long)
+
+.content-band.mt-4
+  %h2.h4.mb-3= t(".rating_history")
+  - if @ratings.any?
+    .table-responsive
+      %table.table.table-sm.align-middle.mb-0
+        %thead
+          %tr
+            %th= t(".image")
+            %th= t(".theme")
+            %th.text-end= t(".rating")
+            %th.text-end= t(".average")
+            %th.text-end= t(".deviation")
+        %tbody
+          - @ratings.each do |rating|
+            %tr
+              %td= rating.image.name
+              %td= localized_theme_name(rating.image.theme)
+              %td.text-end= rating.value
+              %td.text-end= rating.image.ave_value
+              %td.text-end= t(".deviation_value", points: rating.deviation_from_image_average, percent: rating.deviation_percent_from_image_average)
+  - else
+    %p.text-secondary.mb-0= t(".no_ratings")
+
+.content-band.mt-4
+  %h2.h4.mb-1= t(".close_to_average")
+  %p.text-secondary= t(".close_to_average_hint")
+  - if @ratings_close_to_average.any?
+    .table-responsive
+      %table.table.table-sm.align-middle.mb-0
+        %thead
+          %tr
+            %th= t(".image")
+            %th= t(".theme")
+            %th.text-end= t(".rating")
+            %th.text-end= t(".average")
+            %th.text-end= t(".deviation")
+        %tbody
+          - @ratings_close_to_average.each do |rating|
+            %tr
+              %td= rating.image.name
+              %td= localized_theme_name(rating.image.theme)
+              %td.text-end= rating.value
+              %td.text-end= rating.image.ave_value
+              %td.text-end= t(".deviation_value", points: rating.deviation_from_image_average, percent: rating.deviation_percent_from_image_average)
+  - else
+    %p.text-secondary.mb-0= t(".no_close_ratings")

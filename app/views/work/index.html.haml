@@ -1,0 +1,84 @@
+- content_for :title, t(".title")
+- content_for :head do
+  = javascript_include_tag "jquery", defer: true
+  = javascript_include_tag "work", defer: true
+
+.work-area{data: {work_area: true, current_index: 0, theme_id: @selected_theme&.id, images_count: @images.size, next_image_url: api_next_image_path, prev_image_url: api_prev_image_path}}
+  .page-header.mb-4
+    .d-flex.flex-column.flex-lg-row.justify-content-between.gap-3
+      .me-lg-4
+        %span.section-kicker= t(".kicker")
+        %h1.h2.mb-2= t(".heading")
+        %p.text-secondary.mb-0= t(".lead")
+      .text-lg-end
+        %div.small.text-secondary= t(".total_ratings")
+        %div.h3.mb-0= @values_qty
+
+  .row.g-4.align-items-start
+    .col-lg-3
+      .content-band.work-controls
+        = form_with url: work_path, method: :get, local: true do
+          .mb-3
+            = label_tag :theme_id, t(".theme"), class: "form-label fw-semibold"
+            = select_tag :theme_id,
+                         localized_theme_options_for_select(@themes, @selected_theme),
+                         class: "form-select",
+                         onchange: "this.form.requestSubmit()"
+          = submit_tag t(".open"), class: "btn btn-accent w-100"
+
+        %hr.my-4
+
+        %dl.meta-grid.work-meta
+          %div
+            %dt= t(".images")
+            %dd
+              %span{data: {work_index: true}}
+                - if @current_image
+                  = "1 / #{@images.size}"
+                - else
+                  0
+          %div
+            %dt= t(".scale")
+            %dd 5..100
+
+    .col-lg-9
+      .content-band.work-image-panel
+        - if @current_image
+          .d-flex.flex-column.flex-xl-row.justify-content-between.gap-3.mb-3
+            .min-w-0
+              %div.small.text-secondary.mb-1= localized_theme_name(@selected_theme)
+              %h2.h4.mb-0{data: {work_image_title: true}}= @current_image.name
+            .text-xl-end
+              %div.small.text-secondary= t(".average")
+              %div.h4.mb-0{data: {work_average: true}}= @current_image.ave_value
+
+          .work-image-frame.mb-4
+            = image_tag @current_image.file, alt: @current_image.name, class: "work-image", data: {work_image: true}
+
+          .d-flex.justify-content-center.gap-2.mb-4
+            %button.btn.btn-outline-secondary{type: "button", disabled: @images.size < 2, data: {work_nav: "prev"}}
+              %i.fa-solid.fa-chevron-left.me-1
+              = t(".previous")
+            %button.btn.btn-outline-secondary{type: "button", disabled: @images.size < 2, data: {work_nav: "next"}}
+              = t(".next")
+              %i.fa-solid.fa-chevron-right.ms-1
+
+          = form_with url: values_path, method: :post, local: true, html: { class: "rating-form" } do
+            = hidden_field_tag :image_id, @current_image.id, data: {work_image_id: true}
+            .row.g-3.align-items-end
+              .col-md-5
+                = label_tag :value, t(".rating"), class: "form-label fw-semibold"
+                = number_field_tag :value, nil, min: 5, max: 100, step: 1, class: "form-control", placeholder: "5..100"
+              .col-md-auto
+                = submit_tag t(".submit_rating"), class: "btn btn-accent", disabled: !signed_in?
+              .col-md
+                - if signed_in?
+                  %div.small.text-secondary= t(".signed_in_hint")
+                - else
+                  %div.small.text-secondary
+                    = t(".anonymous_hint_html", login_link: link_to(t("shared.header.log_in"), login_path))
+        - else
+          .text-center.py-5
+            %i.fa-solid.fa-image.fa-2x.text-accent.mb-3
+            %h2.h4= t(".no_images")
+            %p.text-secondary.mb-0= t(".no_images_hint")

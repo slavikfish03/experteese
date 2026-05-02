@@ -1,0 +1,21 @@
+- content_for :title, t(".title")
+
+.page-header
+  %span.section-kicker= t(".kicker")
+  %h1.h2.mb-3= t(".heading")
+  %p.text-secondary.mb-0= t(".lead")
+
+.row.g-4.mt-1
+  .col-lg-7
+    %section.content-band
+      %h2.h5.mb-3= t(".core_heading")
+      %p= t(".core_p1")
+      %p.mb-0= t(".core_p2")
+  .col-lg-5
+    %section.content-band
+      %h2.h5.mb-3= t(".architecture_heading")
+      %ul.stacked-list.mb-0
+        %li= t(".architecture_items.models")
+        %li= t(".architecture_items.controllers")
+        %li= t(".architecture_items.database")
+        %li= t(".architecture_items.ajax")
