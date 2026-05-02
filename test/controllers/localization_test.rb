@@ -23,7 +23,7 @@ class LocalizationTest < ActionDispatch::IntegrationTest
     get help_url
 
     assert_response :success
-    assert_select "h1", text: "Как должен развиваться этот интерфейс"
+    assert_select "h1", text: "Куда можно обратиться, если изображения непонятны?"
   end
 
   test "can switch back to english" do

@@ -3,7 +3,8 @@
 .page-header
   %span.section-kicker= t(".kicker")
   %h1.h2.mb-3= t(".heading")
-  %p.text-secondary.mb-0= t(".lead")
+  - if t(".lead").present?
+    %p.text-secondary.mb-0= t(".lead")
 
 .row.g-4.mt-1
   .col-lg-4

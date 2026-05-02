@@ -3,14 +3,16 @@
 .page-header
   %span.section-kicker= t(".kicker")
   %h1.h2.mb-3= t(".heading")
-  %p.text-secondary.mb-0= t(".lead")
+  - if t(".lead").present?
+    %p.text-secondary.mb-0= t(".lead")
 
 .row.g-4.mt-1
   .col-lg-7
     %section.content-band
       %h2.h5.mb-3= t(".core_heading")
       %p= t(".core_p1")
-      %p.mb-0= t(".core_p2")
+      - if t(".core_p2").present?
+        %p.mb-0= t(".core_p2")
   .col-lg-5
     %section.content-band
       %h2.h5.mb-3= t(".architecture_heading")

@@ -17,20 +17,20 @@
       .summary-panel
         %h2.h5.mb-3= t(".status_heading")
         %ul.summary-list
-          %li= t(".status_items.controller")
-          %li= t(".status_items.layout")
-          %li= t(".status_items.assets")
-          %li= t(".status_items.navigation")
+          - %i[controller layout assets navigation].each do |item|
+            - text = t(".status_items.#{item}")
+            - if text.present?
+              %li= text
 
 .row.g-4
   .col-lg-6
     %section.content-band.h-100
       %h2.h5.mb-3= t(".modules_heading")
       %ul.stacked-list
-        %li= t(".module_items.work")
-        %li= t(".module_items.auth")
-        %li= t(".module_items.ajax")
-        %li= t(".module_items.locale")
+        - %i[work auth ajax locale].each do |item|
+          - text = t(".module_items.#{item}")
+          - if text.present?
+            %li= text
   .col-lg-6
     %section.content-band.h-100
       %h2.h5.mb-3= t(".baseline_heading")
